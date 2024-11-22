@@ -18,10 +18,6 @@ def obtener_datos():
         df = pd.DataFrame(datos['data'])
         return df
 
-st.title('Aplicación Huachitos')
-st.text('Huachitos es una plataforma colaborativa de adopción animal.')
-st.text('La iniciativa ha nacido de la preocupación de los creadores por...')
-
 datos = obtener_datos()
 
 def convertir_a_años(edad):
@@ -33,10 +29,6 @@ def convertir_a_años(edad):
         return None  
     
 datos["edad_años"] = datos["edad"].apply(convertir_a_años)
-
-if st.checkbox('Mostrar datos de la API'):
-  st.subheader('Datos: ')
-  st.write(datos)
 
 def vacunas():
   vacunados = datos[datos['vacunas'] == 1]
@@ -105,6 +97,7 @@ def comuna_especifica(comuna):
   st.pyplot(fig)
 
 def tipo():
+  st.subheader("Gráfico de Barras: Distribución de Rescatados por Tipo", divider=True)
   perros = datos.loc[datos['tipo'] == 'Perro']
   gatos = datos.loc[datos['tipo'] == 'Gato']
   conejos = datos.loc[datos['tipo'] == 'Conejo']
@@ -127,6 +120,7 @@ def tipo():
   st.pyplot(fig)
 
 def tipo_especifico(tipo):
+  st.subheader("Gráfico de Torta: Géneros", divider=True)
   machos = datos[(datos['genero'] == 'macho') & (datos['tipo'] == tipo)] 
   hembras = datos[(datos['genero'] == 'hembra') & (datos['tipo'] == tipo)] 
 
@@ -205,48 +199,115 @@ def minimos_maximos():
   st.write(f"La edad máxima registrada es: {edad_max} años. Su nombre es {', '.join(nombres_max)} y su tipo es: {', '.join(tipo_max)}")
   st.write(f"La edad mínima registrada es: {edad_min * 12:.2f} meses. Sus nombres son: {', '.join(nombres_min)}. Y sus tipos son: {', '.join(tipo_min)} respectivamente")
 
-resultado = st.selectbox("Selecciona una palabra clave para mostrar información:", ["tipo de animal", "edad", "género", "esterilización", "vacunas", "rescatados", "comuna"])
+st.title('Aplicación Huachitos 🐶')
 
-if resultado == 'vacunas':
-  vacunas()
+tab1, tab2, tab3 = st.tabs(["Bienvenida", "Ver datos", "Buscador"])
 
-  tasa_vacunacion = datos['vacunas'].mean() * 100 
-  st.subheader("Tasa de Vacunación", divider=True)
-  st.write(f"El {tasa_vacunacion:.2f}% de animales se encuentran vacunados.")
+with tab1:
+    st.subheader("Sobre Huachitos 🐾")
+    st.write("Esta aplicación utiliza la API de Huachitos, una plataforma desarrollada por Rafael y Karla para apoyar la adopción responsable y la difusión de animales en busca de un hogar. Ellos, apasionados por la tecnología y el bienestar animal, desarrollaron una plataforma para apoyar a fundaciones, organizaciones y rescatistas independientes, con el objetivo de dar visibilidad a los animales en adopción.")
+    st.markdown(
+        """
+        <div style="text-align: center;">
+            <a href="https://huachitos.cl/" target="_blank" style="text-decoration: none;">
+                Visita la página oficial de Huachitos
+            </a>
+            <br>
+            <a href="https://huachitos.cl/" target="_blank">
+                <img src="https://huachitos.cl/img/kit/Logo-Huachitos.svg" alt="Huachitos" style="margin-top: 10px; width: 300px; height: auto;">
+            </a>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+    st.markdown("---")
+    st.subheader("¿Qué puedes hacer?")
+    st.markdown("- Revisar los datos de la API 🖥️")
+    st.markdown("- Buscar palabras clave 🔍")
+    st.markdown("- Visualizar gráficos 📈.")
+    st.markdown("- Analizar tendencias y patrones 🚀.")
+    st.markdown("---")
+    st.subheader("Fundaciones")
+    st.markdown(
+        """
+        <div style="display: flex; gap: 20px;">
+            <a href="https://www.instagram.com/rescatandohuellas.pucon?igsh=cGMxZHFjMWdzOGhv" target="_blank">
+                <img src="	https://huachitos.cl/storage/team-profile-photos/E18eFTHsctLEqfesp5Eu5tP2ggRpJpRpm39wjfmi.png" alt="Logo Rescatando Huellas" style="width:150px; height:auto;">
+            </a>
+            <a href="https://www.fundacionanastasia.org" target="_blank">
+                <img src="https://huachitos.cl/storage/team-profile-photos/y4rUZFhl8hLHYtqC1Fe8aU0jzSvOm1xtV0fVuzw8.png" alt="Logo Fundación Anastasia" style="width:150px; height:auto;">
+            </a>
+            <a href="https://www.instagram.com/fundacionnuevocomienzodechile?igsh=MTI5YTFzdnpmcDNoNQ==" target="_blank">
+                <img src="https://huachitos.cl/storage/team-profile-photos/SHVjFpKLnT4GUxqYDVHnI7DQ4Q36LP6cB48tNec5.png" alt="Logo Fundación Nuevo Comienzo" style="width:150px; height:auto;">
+            </a>
+            </a>
+            <a href="https://www.instagram.com/callejeritosdlv/" target="_blank">
+                <img src="https://huachitos.cl/storage/team-profile-photos/w8ea2irUGorcLgOiJ6X3PAF5HbChaXtXsbjZNSVj.png" alt="Logo Fundación Callejeritos" style="width:150px; height:auto;">
+            </a>
+            <a href="https://www.instagram.com/aperrando_sanvicentett/" target="_blank">
+                <img src="https://huachitos.cl/storage/team-profile-photos/oUp0m8MFQbHkLHSzwlv5txWAZjIGlyFcFSz410KH.png" alt="Logo Apperrando" style="width:150px; height:auto;">
+            </a>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
-elif resultado == 'esterilización':
-  esterilizado()
+with tab2:
+    st.subheader("Datos de la API 💻")
+    if st.button("Mostrar datos"):
+      st.write(datos)
+      
+with tab3:
+    st.subheader("Buscador 🔍")
+    resultado = st.selectbox("Selecciona una palabra clave para mostrar información:", ["", "tipo de animal", "edad", "género", "esterilización", "vacunas", "rescatados", "comuna"])
 
-  tasa_esterilizacion = datos['esterilizado'].mean() * 100 
-  st.subheader("Tasa de Esterilización", divider=True)
-  st.write(f"El {tasa_esterilizacion:.2f}% de animales se encuentran esterilizados.")
-elif resultado == 'comuna':
-  comuna()
-  comunas_disponibles = datos['comuna'].unique()
-  comuna_seleccionada = st.selectbox("Si deseas, puedes ver gráficos específicos por comuna:", comunas_disponibles)
-  if comuna_seleccionada:
-    comuna_especifica(comuna_seleccionada)
-elif resultado == 'tipo de animal':
-  tipo()
-  tipos_disponibles = datos['tipo'].unique()
-  tipo_seleccionado = st.selectbox("Si deseas, puedes ver gráficos específicos por tipo de animal:", tipos_disponibles)
-  if tipo_seleccionado:
-    tipo_especifico(tipo_seleccionado)
-elif resultado == 'género':
-  st.subheader("Gráfico de Torta: Géneros", divider=True)
-  tipo = st.radio("Selecciona un tipo: ", ["Perro", "Gato", "Conejo"])
-  tipo_especifico(tipo)
-elif resultado == 'rescatados':
-  nombres_disponibles = datos['nombre'].unique()
-  nombre_seleccionado = st.selectbox("Selecciona un nombre para ver su foto:", nombres_disponibles)
-  if nombre_seleccionado:
-    imagen(nombre_seleccionado)
-elif resultado == 'edad':
-  edad()
-  prom_edades = datos["edad_años"].mean() 
+    if resultado == 'vacunas':
+      vacunas()
+      tasa_vacunacion = datos['vacunas'].mean() * 100 
+      st.subheader("Tasa de Vacunación", divider=True)
+      st.write(f"El {tasa_vacunacion:.2f}% de animales se encuentran vacunados.")
 
-  st.subheader("Promedio de edad", divider=True)
-  st.write(f"\nEl promedio de edades entre perros, gatos y conejos es: {prom_edades:.2f} años")
-  minimos_maximos()
-else:
-  st.write("No hay gráfico para mostrar.")    
+    elif resultado == 'esterilización':
+      esterilizado()
+      tasa_esterilizacion = datos['esterilizado'].mean() * 100 
+      st.subheader("Tasa de Esterilización", divider=True)
+      st.write(f"El {tasa_esterilizacion:.2f}% de animales se encuentran esterilizados.")
+
+    elif resultado == 'comuna':
+      comuna()
+      comunas_disponibles = datos['comuna'].unique()
+      comuna_seleccionada = st.selectbox("Si deseas, puedes ver gráficos específicos por comuna:", comunas_disponibles)
+      if comuna_seleccionada:
+        comuna_especifica(comuna_seleccionada)
+
+    elif resultado == 'tipo de animal':
+      tipo()
+      tipos_disponibles = datos['tipo'].unique()
+      tipo_seleccionado = st.selectbox("Si deseas, puedes ver gráficos específicos por tipo de animal:", tipos_disponibles)
+      if tipo_seleccionado:
+        tipo_especifico(tipo_seleccionado)
+
+    elif resultado == 'género':
+      tipo = st.radio("Selecciona un tipo: ", ["Perro", "Gato", "Conejo"])
+      tipo_especifico(tipo)
+
+    elif resultado == 'rescatados':
+      st.markdown("---")
+      st.subheader("Información sobre los Rescatados")
+      nombres_disponibles = datos['nombre'].unique().tolist()
+      nombres_disponibles.insert(0, 'Selecciona un nombre')
+      nombre_seleccionado = st.selectbox("Selecciona un nombre para ver su foto:", nombres_disponibles)
+      if nombre_seleccionado != 'Selecciona un nombre':
+        imagen(nombre_seleccionado)
+
+    elif resultado == 'edad':
+      edad()
+      prom_edades = datos["edad_años"].mean() 
+
+      st.subheader("Promedio de edad", divider=True)
+      st.write(f"\nEl promedio de edades entre perros, gatos y conejos es: {prom_edades:.2f} años")
+      minimos_maximos()
+
+    else:
+      st.write("No hay gráfico para mostrar.")  
+            
